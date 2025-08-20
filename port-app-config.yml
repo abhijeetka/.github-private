@@ -1,3 +1,4 @@
+createMissingRelatedEntities: true
 resources:
   - kind: file
     selector:
@@ -126,4 +127,40 @@ resources:
             readme: file://README.md
           relations:
             repository: .repo.name
+  - kind: environment
+    selector:
+      query: "true"
+    port:
+      entity:
+        mappings:
+          identifier: .repo + '-' + .name
+          title: .name
+          blueprint: '"githubRepoEnvironment"'
+          properties:
+            url: .html_url
+            customBranchesPolicies: .custom_branches_policies
+            protectedBranches: .protected_branches
+            createdAt: .created_at
+            updatedAt: .updated_at
+          relations:
+            repository: .repo
+  - kind: deployment
+    selector:
+      query: "true"
+    port:
+      entity:
+        mappings:
+          identifier: .repo + '-' + (.id|tostring)
+          title: .task + '-' + .environment
+          blueprint: '"deployment"'
+          properties:
+            description: .description
+            ref: .ref
+            sha: .sha
+            productionEnvironment: .production_environment
+            transientEnvironment: .transient_environment
+            createdAt: .created_at
+            url: .url
+          relations:
+            environment: .repo + '-' + .environment
           
