@@ -105,4 +105,25 @@ resources:
             link: ".html_url"
           relations:
             repository: ".repo"
+  - kind: folder
+    selector:
+      query: "true"
+      folders:
+        - path: "*" # Using "*" will ingest the folders from the root of each of repository as entities
+          repos: # Add any repositories you want to map folders from to the following list
+            - backend-service
+            - frontend-service
+    port:
+      entity:
+        mappings:
+          identifier: .folder.name
+          title: .folder.name
+          blueprint: '"githubFolder"'
+          properties:
+            url: >-
+              .repo.html_url + "/tree/" + .repo.default_branch  + "/" +
+              .folder.path
+            readme: file://README.md
+          relations:
+            repository: .repo.name
           
